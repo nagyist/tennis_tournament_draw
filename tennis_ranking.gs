@@ -33,13 +33,98 @@ function getAllCategories() {
 
 function onOpen() {
   var ui = SpreadsheetApp.getUi();
+  var menuCat;
+  var submenuSpecificCat;
   // Or DocumentApp or FormApp.
-  ui.createMenu('Ranking')
-      .addItem('Calculate All', 'menuItem1')
+  menu=ui.createMenu('Ranking');
+  
+  menu.addItem('Calculate All', 'menuItem1')
       .addSeparator()
       .addSubMenu(ui.createMenu('Category')
-          .addItem('Calculate for a specific category', 'menuItem2'))
+          .addItem('Singles', 'calcSingles')
+          .addItem("Doubles", 'calcDoubles'))
       .addToUi();
+  /*
+  menu.addSeparator();
+  
+  var submenuSpecificCat=ui.createMenu("Categorie");
+  // get all available categories
+  getAllCategories();
+  for( var i=0 ; i<categories.length ; i++ ) {
+    var functionName="calcCategory(\'"+categories[i]+"\')";
+    submenuSpecificCat.addItem(categories[i], functionName);
+  }
+  menu.addSubMenu(submenuSpecificCat);
+  menu.addToUi();
+  */
+}
+
+function calcForCategory(category_type) {
+  
+  var ui = SpreadsheetApp.getUi();
+  var result = ui.alert(
+     "Επιλέξατε υπολογισμό βαθμολογιας για ολα τα ταμπλω "+category_type,
+     'Επιβεβαιώστε για συνέχεια',
+      ui.ButtonSet.YES_NO);
+
+  // Process the user's response.
+  if (result == ui.Button.YES) {
+    // User clicked "Yes".
+    //ui.alert('Confirmation received.');
+  } else {
+    // User clicked "No" or X in the title bar.
+    return;
+  }
+  getAllCategories();
+  var i=0;  
+  for( i=0 ; i< categories.length; i++ ) {
+    ////////////////////////Logger.log("category="+categories[i]);
+    //SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
+    // .alert("cat = "+categories[i]);
+    if ( getSingleOrDouble( categories[i] ) == category_type ) {
+      calculateCategoryRanking( categories[i] );
+    }
+  
+  }
+  
+  var editors = SpreadsheetApp.getActiveSpreadsheet().getEditors();
+  var emailDescription="Πραγματοποιήθηκε αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας για τις παρακάτω κατηγορίες "+category_type+ " \n\n";
+  for( i=0 ; i < newDocs.length; i++ ){
+    var newdoc = newDocs[i];
+    // create the email description
+    emailDescription+="κατηγορία: "+newdoc.category+" όνομα αρχείου: "+newdoc.name+" URL: "+newdoc.url+"\n\n";
+    
+    //share new doc with competition_tournament sheet editors
+    var new_ss = SpreadsheetApp.openByUrl(newdoc.url);
+     for(var j=0; j< editors.length ; j++) {
+       new_ss.addEditor(editors[j].getEmail()) ;
+     }
+     
+  }
+  
+  var email_title="αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας "+category_type;
+  MailApp.sendEmail(SpreadsheetApp.getActiveSpreadsheet().getOwner().getEmail(), email_title, emailDescription);
+  
+  
+ for( i = 0 ; i< editors.length; i++ ) {
+   MailApp.sendEmail(editors[i].getEmail(), email_title, emailDescription);
+ }
+  
+ SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
+ .alert('ΟΙ ΝΕΕΣ ΣΥΓΚΕΝΤΡΩΤΙΚΕΣ ΒΑΘΜΟΛΟΓΙΕΣ ΥΠΟΛΟΓΙΣΤΗΚΑΝ ΜΕ ΕΠΙΤΥΧΙΑ! ΠΑΡΑΚΑΛΩ ΕΛΕΓΞΤΕ ΤΟ EMAIL ΣΑΣ ΓΙΑ ΛΕΠΤΟΜΕΡΕΙΕΣ');
+
+}
+
+function calcDoubles() {
+  
+  calcForCategory("Double");
+  
+}
+
+function calcSingles( ) {
+  
+  calcForCategory("Single");
+  
 }
 
 function menuItem1() {
