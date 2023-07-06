@@ -88,11 +88,11 @@ function calcForCategory(category_type) {
   }
   
   var editors = SpreadsheetApp.getActiveSpreadsheet().getEditors();
-  var emailDescription="Πραγματοποιήθηκε αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας για τις παρακάτω κατηγορίες "+category_type+ " \n\n";
+  var emailDescription="An aggregate score was automatically generated for the categories below "+category_type+ " \n\n";
   for( i=0 ; i < newDocs.length; i++ ){
     var newdoc = newDocs[i];
     // create the email description
-    emailDescription+="κατηγορία: "+newdoc.category+" όνομα αρχείου: "+newdoc.name+" URL: "+newdoc.url+"\n\n";
+    emailDescription+="Category: "+newdoc.category+" file name: "+newdoc.name+" URL: "+newdoc.url+"\n\n";
     
     //share new doc with competition_tournament sheet editors
     var new_ss = SpreadsheetApp.openByUrl(newdoc.url);
@@ -102,7 +102,7 @@ function calcForCategory(category_type) {
      
   }
   
-  var email_title="αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας "+category_type;
+  var email_title="automatic generation of aggregate score "+category_type;
   MailApp.sendEmail(SpreadsheetApp.getActiveSpreadsheet().getOwner().getEmail(), email_title, emailDescription);
   
   
@@ -111,7 +111,7 @@ function calcForCategory(category_type) {
  }
   
  SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
- .alert('ΟΙ ΝΕΕΣ ΣΥΓΚΕΝΤΡΩΤΙΚΕΣ ΒΑΘΜΟΛΟΓΙΕΣ ΥΠΟΛΟΓΙΣΤΗΚΑΝ ΜΕ ΕΠΙΤΥΧΙΑ! ΠΑΡΑΚΑΛΩ ΕΛΕΓΞΤΕ ΤΟ EMAIL ΣΑΣ ΓΙΑ ΛΕΠΤΟΜΕΡΕΙΕΣ');
+ .alert('NEW AGGREGATE RATINGS CALCULATED SUCCESSFULLY! PLEASE CHECK YOUR EMAIL FOR DETAILS');
 
 }
 
@@ -133,8 +133,8 @@ function menuItem1() {
   var ui = SpreadsheetApp.getUi(); // Same variations.
 
   var result = ui.alert(
-     'Επιλέξατε υπολογισμό βαθμολογίας όλων των κατηγοριών',
-     'Επιβεβαιώστε για συνέχεια',
+     'You have selected score calculation of all categories',
+     'Confirm to continue',
       ui.ButtonSet.YES_NO);
 
   // Process the user's response.
@@ -164,11 +164,11 @@ function menuItem1() {
  
  var editors = SpreadsheetApp.getActiveSpreadsheet().getEditors();
  
-  var emailDescription="Πραγματοποιήθηκε αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας για τις παρακάτω κατηγορίες \n\n";
+  var emailDescription="An aggregate score was automatically generated for the categories below \n\n";
   for( i=0 ; i < newDocs.length; i++ ){
     var newdoc = newDocs[i];
     // create the email description
-    emailDescription+="κατηγορία: "+newdoc.category+" όνομα αρχείου: "+newdoc.name+" URL: "+newdoc.url+"\n\n";
+    emailDescription+="Category: "+newdoc.category+" file name: "+newdoc.name+" URL: "+newdoc.url+"\n\n";
     
     //share new doc with competition_tournament sheet editors
     var new_ss = SpreadsheetApp.openByUrl(newdoc.url);
@@ -177,15 +177,15 @@ function menuItem1() {
      }
      
   }
-  MailApp.sendEmail(SpreadsheetApp.getActiveSpreadsheet().getOwner().getEmail(), "αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας", emailDescription);
+  MailApp.sendEmail(SpreadsheetApp.getActiveSpreadsheet().getOwner().getEmail(), "automatic generation of aggregate score", emailDescription);
   
   
  for( i = 0 ; i< editors.length; i++ ) {
-   MailApp.sendEmail(editors[i].getEmail(), "αυτόματη παραγωγή συγκεντρωτικής βαθμολογίας", emailDescription);
+   MailApp.sendEmail(editors[i].getEmail(), "automatic generation of aggregate score", emailDescription);
  }
   
     SpreadsheetApp.getUi() // Or DocumentApp or FormApp.
-     .alert('ΟΙ ΝΕΕΣ ΣΥΓΚΕΝΤΡΩΤΙΚΕΣ ΒΑΘΜΟΛΟΓΙΕΣ ΥΠΟΛΟΓΙΣΤΗΚΑΝ ΜΕ ΕΠΙΤΥΧΙΑ! ΠΑΡΑΚΑΛΩ ΕΛΕΓΞΤΕ ΤΟ EMAIL ΣΑΣ ΓΙΑ ΛΕΠΤΟΜΕΡΕΙΕΣ');
+     .alert('NEW AGGREGATE RATINGS CALCULATED SUCCESSFULLY! PLEASE CHECK YOUR EMAIL FOR DETAILS');
 
 }
 
@@ -328,13 +328,13 @@ function createNewSheet( category_tourn, total_players_ranking) {
   
   sheet.clear();
   
-  var description="ΣΥΓΚΕΝΤΡΩΤΙΚΗ ΒΑΘΜΟΛΟΓΙΑ ΚΑΤΗΓΟΡΙΑΣ "+category_tourn;
+  var description="AGGREGATE CATEGORY RATING "+category_tourn;
   var description_arr = [];
   
   description_arr.push(description);
   description_arr.push(" ");
   sheet.appendRow(description_arr);
-  sheet.appendRow(["RANK", "ONOΜΑ", "ΒΑΘΜΟΛΟΓΙΑ"]);
+  sheet.appendRow(["RANK", "NAME", "GRADING"]);
   var rank=0;
   var num_of_ranked=0;
   for( var j =0 ; j< total_players_ranking.length ; j++) {
